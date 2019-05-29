@@ -1,0 +1,137 @@
+<html>
+  <head>
+    <title>バーコードジェネレータ</title>
+    <!--
+      Date    : 2019-05-29
+      Author  : aizwellenstan <aizwellenstan@gmail.com>
+      Web site: https://github.com/aizwellenstan
+    -->
+    <meta name="description" content="https://github.com/aizwellenstan">
+    <meta name="keywords" content="https://github.com/aizwellenstan">      
+    <link rel="stylesheet" href="assets/css/style.css">
+    <script type="text/javascript" src="assets/js/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="assets/js/barcode.js"></script>
+    <script type="text/javascript">
+    
+      function generateBarcode(){
+        var value = $("#barcodeValue").val();
+        var value2 = $("#barcodeValue2").val();
+        var value3 = $("#barcodeValue3").val();
+        var value4 = $("#barcodeValue4").val();
+        var btype = $("input[name=btype]:checked").val();
+        var renderer = $("input[name=renderer]:checked").val();
+
+        var settings = {
+          output:renderer,
+          bgColor: $("#bgColor").val(),
+          color: $("#color").val(),
+          barWidth: $("#barWidth").val(),
+          barHeight: $("#barHeight").val(),
+          moduleSize: $("#moduleSize").val(),
+          posX: $("#posX").val(),
+          posY: $("#posY").val(),
+          addQuietZone: $("#quietZoneSize").val()
+        };
+        if ($("#rectangular").is(':checked') || $("#rectangular").attr('checked')){
+          value = {code:value, rect: true};
+          value2 = {code:value, rect: true};
+          value3 = {code:value, rect: true};
+          value4 = {code:value, rect: true};
+        }
+        if (renderer == 'canvas'){
+          clearCanvas();
+          $("#barcodeTarget").hide();
+          $("#barcodeTarget2").hide();
+          $("#barcodeTarget3").hide();
+          $("#barcodeTarget4").hide();
+          $("#canvasTarget").show().barcode(value, btype, settings);
+          $("#canvasTarget2").show().barcode(value2, btype, settings);
+          $("#canvasTarget3").show().barcode(value3, btype, settings);
+          $("#canvasTarget4").show().barcode(value4, btype, settings);
+        } else {
+          $("#canvasTarget").hide();
+          $("#canvasTarget2").hide();
+          $("#canvasTarget3").hide();
+          $("#canvasTarget4").hide();
+          $("#barcodeTarget").html("").show().barcode(value, btype, settings);
+          $("#barcodeTarget2").html("").show().barcode(value2, btype, settings);
+          $("#barcodeTarget3").html("").show().barcode(value3, btype, settings);
+          $("#barcodeTarget4").html("").show().barcode(value4, btype, settings);
+        }
+      }
+          
+      function showConfig1D(){
+        $('.config .barcode1D').show();
+        $('.config .barcode2D').hide();
+      }
+      
+      function showConfig2D(){
+        $('.config .barcode1D').hide();
+        $('.config .barcode2D').show();
+      }
+      
+      function clearCanvas(){
+        var canvas = $('#canvasTarget').get(0);
+        var ctx = canvas.getContext('2d');
+        ctx.lineWidth = 1;
+        ctx.lineCap = 'butt';
+        ctx.fillStyle = '#FFFFFF';
+        ctx.strokeStyle  = '#000000';
+        ctx.clearRect (0, 0, canvas.width, canvas.height);
+        ctx.strokeRect (0, 0, canvas.width, canvas.height);
+      }
+      
+      $(function(){
+        $('input[name=btype]').click(function(){
+          if ($(this).attr('id') == 'datamatrix') showConfig2D(); else showConfig1D();
+        });
+        $('input[name=renderer]').click(function(){
+          if ($(this).attr('id') == 'canvas') $('#miscCanvas').show(); else $('#miscCanvas').hide();
+        });
+        generateBarcode();
+      });
+  
+    </script>
+  </head>
+  <body>
+    <div id="generator">
+      Please fill in the code : <br>
+      <input type="text" id="barcodeValue" value="">
+      <br>
+      <input type="text" id="barcodeValue2" value="">
+      <br>
+      <input type="text" id="barcodeValue3" value="">
+      <br>
+      <input type="text" id="barcodeValue4" value="">
+      </div>
+        
+      <div id="submit">
+        <input type="button" onclick="generateBarcode();" value="&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;送信&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;">
+      </div>
+        
+    </div>
+
+    <a href="#" class="w3-right home-button">
+        <i class="fa fa-print" style="font-size:20px;"  aria-hidden="true" onclick="printDiv('print')" value="print a div!" >print</i>       <script type="text/javascript">                     function printDiv(divName) {
+                var printContents = document.getElementById(divName).innerHTML;
+                var originalContents = document.body.innerHTML;
+                document.body.innerHTML = printContents;
+                window.print();
+                document.body.innerHTML = originalContents;
+            }
+        </script>
+    </a>
+    <div id="print">
+      <div id="barcodeTarget" class="barcodeTarget"></div>
+      <canvas id="canvasTarget" width="150" height="150"></canvas> <br>
+      <div id="barcodeTarget2" class="barcodeTarget"></div>
+      <canvas id="canvasTarget2" width="150" height="150"></canvas>
+      <br>
+      <div id="barcodeTarget3" class="barcodeTarget"></div>
+      <canvas id="canvasTarget3" width="150" height="150"></canvas>
+      <br>
+      <div id="barcodeTarget4" class="barcodeTarget"></div>
+      <canvas id="canvasTarget4" width="150" height="150"></canvas>
+    </div>
+  </body>
+</html>
